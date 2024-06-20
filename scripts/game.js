@@ -69,8 +69,8 @@ export default class Game {
             )
         }
 
-        this.bgImage = new Image();
-        this.bgImage.src = '../assets/bg.jpg';
+        // this.bgImage = new Image();
+        // this.bgImage.src = '../assets/bg.jpg';
 
         this.gameoverSFX = new Audio('../assets/game-over.mp3');
         this.scoreSFX = new Audio('../assets/score.mp3');
@@ -183,7 +183,7 @@ export default class Game {
 
 
         // draw
-        this.drawBg();
+        // this.drawBg();
         this.drawScore();
 
         this.ctx.fillStyle = 'black';
