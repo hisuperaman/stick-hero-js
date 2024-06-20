@@ -11,7 +11,7 @@ export default class Game {
         this.touchMap = touchMap;
 
         this.state = { gameover: false };
-        this.transitionSpeed = 8;
+        this.transitionSpeed = 10;
         this.sceneOffset = 0;
 
         this.targetFrameTime = Math.floor(1000 / fps);
@@ -32,12 +32,12 @@ export default class Game {
 
         const currentBlockX = this.blocks[this.currentBlock].x;
         const currentBlockWidth = this.blocks[this.currentBlock].width;
-        const playerWidth = 50;
-        const playerHeight = 50;
-        const playerXOffset = (currentBlockWidth - playerWidth) - 5;
+        this.playerWidth = 40;
+        this.playerHeight = 40;
+        const playerXOffset = (currentBlockWidth - this.playerWidth) - 5;
         const playerX = currentBlockX + playerXOffset;
-        const playerY = blockY - playerHeight;
-        this.player = new Player(playerX, playerY, playerXOffset, playerWidth, playerHeight, this.state);
+        const playerY = blockY - this.playerHeight;
+        this.player = new Player(playerX, playerY, playerXOffset, this.playerWidth, this.playerHeight, this.state);
 
 
         const stickX = currentBlockX + currentBlockWidth;
@@ -53,21 +53,7 @@ export default class Game {
 
 
         // generate 5 initial blocks
-        this.blockGapMin = this.player.width * 1;
-        this.blockGapMaxOffset = this.canvas.width * 0.3;
-        for (let i = 0; i < 5; i++) {
-            const lastBlock = this.blocks[this.blocks.length - 1];
-            const newBlockWidth = getRandomInteger(this.player.width * 2, this.canvas.width * 0.2);
-            const lastBlockRightX = lastBlock.x + lastBlock.width;
-
-            const blockGapMax = newBlockWidth + this.blockGapMaxOffset;
-
-            const newBlockX = getRandomInteger(lastBlockRightX + this.blockGapMin, lastBlockRightX + blockGapMax);
-
-            this.blocks.push(
-                new Block(newBlockX, lastBlock.y, newBlockWidth, lastBlock.height)
-            )
-        }
+        this.generateFiveBlocks();
 
         // this.bgImage = new Image();
         // this.bgImage.src = '../assets/bg.jpg';
@@ -85,7 +71,7 @@ export default class Game {
 
         const storedHighscore = localStorage.getItem('aman-stickhero-highscore');
         this.highscore = 0;
-        if(storedHighscore){
+        if (storedHighscore) {
             this.highscore = parseInt(storedHighscore);
         }
 
@@ -147,12 +133,12 @@ export default class Game {
             }
 
 
-            if (lastStick.x + lastStick.length <= lastActiveBlock.x + lastActiveBlock.width){
+            if (lastStick.x + lastStick.length <= lastActiveBlock.x + lastActiveBlock.width) {
                 this.scoreSFX.currentTime = 0;
                 this.scoreSFX.play();
                 this.score += passedCount;
             }
-            else{
+            else {
                 this.noScoreSFX.currentTime = 0;
                 this.noScoreSFX.play();
             }
@@ -226,20 +212,33 @@ export default class Game {
     generateNewBlock() {
         this.currentBlock += this.sticks[this.currentStick].blocksPassed;
 
+        this.generateFiveBlocks();
+    }
+
+    generateFiveBlocks() {
+        const blockGapMin = this.player.width * 1;
+        const blockGapMaxOffset = (this.canvas.width >= this.canvas.height) ? (this.canvas.width * 0.02) : (this.canvas.width * 0.1);
+
+
         for (let i = 0; i < 5; i++) {
             const lastBlock = this.blocks[this.blocks.length - 1];
-            const newBlockWidth = getRandomInteger(this.player.width * 2, this.canvas.width * 0.2);
+
+            const newBlockWidthMax =  (this.canvas.width >= this.canvas.height) ? (this.canvas.width * 0.2) : (this.canvas.width * 0.3);
+            const newBlockWidth = getRandomInteger(this.player.width + 10, newBlockWidthMax);
+
             const lastBlockRightX = lastBlock.x + lastBlock.width;
 
-            const blockGapMax = newBlockWidth + this.blockGapMaxOffset;
+            const blockGapMax = newBlockWidth + blockGapMaxOffset;
 
-            const newBlockX = getRandomInteger(lastBlockRightX + this.blockGapMin, lastBlockRightX + blockGapMax);
+            const newBlockX = getRandomInteger(lastBlockRightX + blockGapMin, lastBlockRightX + blockGapMax);
 
             this.blocks.push(
                 new Block(newBlockX, lastBlock.y, newBlockWidth, lastBlock.height)
             )
         }
     }
+
+
 
     adjustScene() {
         if (this.state.waiting && this.player.x > this.sceneOffset + (this.canvas.width * 0.2)) {
@@ -282,15 +281,15 @@ export default class Game {
 
         this.ctx.font = "20px 'Roboto', sans-serif";
         const smallTextWidth = 140;
-        this.ctx.fillText(`Click to restart`, centerX - (smallTextWidth / 2), centerY+50, smallTextWidth);
+        this.ctx.fillText(`Click to restart`, centerX - (smallTextWidth / 2), centerY + 50, smallTextWidth);
 
         this.ctx.fillStyle = 'black'
 
     }
 
 
-    saveHighscore(){
-        if(this.score > this.highscore){
+    saveHighscore() {
+        if (this.score > this.highscore) {
             localStorage.setItem('aman-stickhero-highscore', this.score);
             this.highscore = this.score;
         }
@@ -313,12 +312,10 @@ export default class Game {
 
         const currentBlockX = this.blocks[this.currentBlock].x;
         const currentBlockWidth = this.blocks[this.currentBlock].width;
-        const playerWidth = 50;
-        const playerHeight = 50;
-        const playerXOffset = (currentBlockWidth - playerWidth) - 5;
+        const playerXOffset = (currentBlockWidth - this.playerWidth) - 5;
         const playerX = currentBlockX + playerXOffset;
-        const playerY = blockY - playerHeight;
-        this.player = new Player(playerX, playerY, playerXOffset, playerWidth, playerHeight, this.state);
+        const playerY = blockY - this.playerHeight;
+        this.player = new Player(playerX, playerY, playerXOffset, this.playerWidth, this.playerHeight, this.state);
 
 
         const stickX = currentBlockX + currentBlockWidth;
@@ -331,22 +328,8 @@ export default class Game {
 
         this.score = 0;
 
-
-
         // generate 5 initial blocks
-        for (let i = 0; i < 5; i++) {
-            const lastBlock = this.blocks[this.blocks.length - 1];
-            const newBlockWidth = getRandomInteger(this.player.width * 2, this.canvas.width * 0.2);
-            const lastBlockRightX = lastBlock.x + lastBlock.width;
-
-            const blockGapMax = newBlockWidth + this.blockGapMaxOffset;
-
-            const newBlockX = getRandomInteger(lastBlockRightX + this.blockGapMin, lastBlockRightX + blockGapMax);
-
-            this.blocks.push(
-                new Block(newBlockX, lastBlock.y, newBlockWidth, lastBlock.height)
-            )
-        }
+        this.generateFiveBlocks();
 
 
         this.gameover = false;

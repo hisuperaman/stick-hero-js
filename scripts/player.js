@@ -49,7 +49,7 @@ export default class Player {
                 this.state['gameover'] = true;
             }
 
-            if ((this.x === currentBlock.x + this.xOffset) && (prevStick.x + prevStick.length < currentBlock.x + currentBlock.width)) {
+            if ((this.x === currentBlock.x + this.xOffset) && (prevStick.x + prevStick.length <= currentBlock.x + currentBlock.width)) {
                 this.state['waiting'] = true;
             }
             else {

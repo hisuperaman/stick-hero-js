@@ -50,6 +50,8 @@ export default class Stick {
                 this.active = false;
             }
         }
+
+        
     }
 
 }
