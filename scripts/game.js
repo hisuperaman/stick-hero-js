@@ -5,10 +5,12 @@ import Stick from "./stick.js";
 import { getRandomInteger } from "./utils.js";
 
 export default class Game {
-    constructor(canvas, ctx, fps, touchMap) {
+    constructor(canvas, ctx, fps, touchMap, canvasSize) {
         this.canvas = canvas;
         this.ctx = ctx;
         this.touchMap = touchMap;
+
+        this.canvasSize = canvasSize;
 
         this.state = { gameover: false };
         this.transitionSpeed = 10;
@@ -20,10 +22,10 @@ export default class Game {
         this.gameLoop = this.gameLoop.bind(this);
 
 
-        this.blockHeight = canvas.height * 0.2;
-        const blockY = canvas.height - this.blockHeight;
+        this.blockHeight = this.canvasSize.height * 0.2;
+        const blockY = this.canvasSize.height - this.blockHeight;
         this.blocks = [
-            new Block(0, blockY, canvas.width * 0.2, this.blockHeight)
+            new Block(0, blockY, this.canvasSize.width * 0.2, this.blockHeight)
         ];
 
 
@@ -83,7 +85,7 @@ export default class Game {
     }
 
     gameLoop(timestamp) {
-        if (this.state.gameover && this.player.y >= this.canvas.height) {
+        if (this.state.gameover && this.player.y >= this.canvasSize.height) {
             this.gameoverSFX.currentTime = 0;
             this.gameoverSFX.play();
 
@@ -105,7 +107,7 @@ export default class Game {
 
     gameEngine() {
         // update
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height);
 
         this.player.update(this.blocks[this.currentBlock], this.blocks[this.currentBlock - 1], this.sticks[this.currentStick], this.sticks[this.currentStick - 1]);
         this.sticks[this.currentStick].update(this.state);
@@ -188,7 +190,7 @@ export default class Game {
         })
 
 
-        if (this.state.gameover && this.player.y >= this.canvas.height) {
+        if (this.state.gameover && this.player.y >= this.canvasSize.height) {
             this.gameover = true;
             this.drawGameOver();
         }
@@ -217,13 +219,13 @@ export default class Game {
 
     generateFiveBlocks() {
         const blockGapMin = this.player.width * 1;
-        const blockGapMaxOffset = (this.canvas.width >= this.canvas.height) ? (this.canvas.width * 0.02) : (this.canvas.width * 0.1);
+        const blockGapMaxOffset = (this.canvasSize.width >= this.canvasSize.height) ? (this.canvasSize.width * 0.02) : (this.canvasSize.width * 0.1);
 
 
         for (let i = 0; i < 5; i++) {
             const lastBlock = this.blocks[this.blocks.length - 1];
 
-            const newBlockWidthMax =  (this.canvas.width >= this.canvas.height) ? (this.canvas.width * 0.2) : (this.canvas.width * 0.3);
+            const newBlockWidthMax =  (this.canvasSize.width >= this.canvasSize.height) ? (this.canvasSize.width * 0.2) : (this.canvasSize.width * 0.3);
             const newBlockWidth = getRandomInteger(this.player.width + 10, newBlockWidthMax);
 
             const lastBlockRightX = lastBlock.x + lastBlock.width;
@@ -241,7 +243,7 @@ export default class Game {
 
 
     adjustScene() {
-        if (this.state.waiting && this.player.x > this.sceneOffset + (this.canvas.width * 0.2)) {
+        if (this.state.waiting && this.player.x > this.sceneOffset + (this.canvasSize.width * 0.2)) {
             this.sceneOffset += this.transitionSpeed;
         }
     }
@@ -249,7 +251,7 @@ export default class Game {
 
 
     drawBg() {
-        this.ctx.drawImage(this.bgImage, 0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.drawImage(this.bgImage, 0, 0, this.canvasSize.width, this.canvasSize.height);
     }
 
     drawScore() {
@@ -257,7 +259,7 @@ export default class Game {
         this.ctx.fillStyle = 'black';
         const textWidth = 100;
         const textY = 60;
-        this.ctx.fillText(`${this.score}`, this.canvas.width - textWidth, textY, textWidth);
+        this.ctx.fillText(`${this.score}`, this.canvasSize.width - textWidth, textY, textWidth);
         const highscoreTextWidth = 100;
         this.ctx.fillText(`${this.highscore}`, 40, textY, highscoreTextWidth);
     }
@@ -267,8 +269,8 @@ export default class Game {
         this.ctx.fillStyle = 'black';
         const textWidth = this.gameoverTextWidth;
 
-        const centerX = (this.canvas.width / 2) + this.sceneOffset;
-        const centerY = (this.canvas.height / 2);
+        const centerX = (this.canvasSize.width / 2) + this.sceneOffset;
+        const centerY = (this.canvasSize.height / 2);
         const radius = this.gameoverRadius;
 
         this.ctx.beginPath();
@@ -301,9 +303,9 @@ export default class Game {
         this.sceneOffset = 0;
 
 
-        const blockY = this.canvas.height - this.blockHeight;
+        const blockY = this.canvasSize.height - this.blockHeight;
         this.blocks = [
-            new Block(0, blockY, this.canvas.width * 0.2, this.blockHeight)
+            new Block(0, blockY, this.canvasSize.width * 0.2, this.blockHeight)
         ];
 
 

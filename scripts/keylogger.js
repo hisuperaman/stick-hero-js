@@ -1,4 +1,4 @@
-export function handleTouchInput(canvas, touchMap, game) {
+export function handleTouchInput(canvas, touchMap, game, canvasSize) {
     canvas.addEventListener('mousedown', handleEvent);
     canvas.addEventListener('mouseup', handleEvent);
     canvas.addEventListener('mousemove', handleMouseMove);
@@ -35,8 +35,8 @@ export function handleTouchInput(canvas, touchMap, game) {
             let mouseY = touch.clientY - rect.top;
 
 
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
+            const centerX = canvasSize.width / 2;
+            const centerY = canvasSize.height / 2;
             let distance = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
             // reset game
             if (distance <= game.gameoverRadius) {
@@ -61,8 +61,8 @@ export function handleTouchInput(canvas, touchMap, game) {
             let mouseX = e.clientX - rect.left;
             let mouseY = e.clientY - rect.top;
 
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
+            const centerX = canvasSize.width / 2;
+            const centerY = canvasSize.height / 2;
             let distance = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
             // reset game
             if (distance <= game.gameoverRadius && e.button === 0) {
@@ -78,8 +78,8 @@ export function handleTouchInput(canvas, touchMap, game) {
             let mouseX = e.clientX - rect.left;
             let mouseY = e.clientY - rect.top;
 
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
+            const centerX = canvasSize.width / 2;
+            const centerY = canvasSize.height / 2;
             let distance = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
             // reset game
             if (distance <= game.gameoverRadius) {
